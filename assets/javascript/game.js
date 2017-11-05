@@ -200,7 +200,7 @@ $(document).ready(function(){
 			}
 			$(defenderid).children('.character-hp').text(defenderobj.currhp);
 				// increase player curratk power
-			playerobj.curratk = playerobj.curratk + 10;
+			playerobj.curratk += playerobj.baseatk;
 
 			// defender attacks player ( player.currhp - defender.cntratk )
 			console.log('Defender attacks player:')
