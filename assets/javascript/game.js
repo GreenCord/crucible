@@ -62,7 +62,7 @@ $(document).ready(function(){
 
 		//define game phase tracker
 
-		phase: 'pregame', // possible phases: pregame, select, start, begin, battle, gameover
+		phase: 'pregame', // possible phases: pregame, select, begin, battle, gameover
 
 		//define game initialization
 
@@ -133,7 +133,7 @@ $(document).ready(function(){
 			switch (this.phase) {
 				// game phase pregame
 				case 'pregame': 
-
+					console.log('pregame phase detected');
 					switch (objid) { // check object clicked
 						
 						case '#replay-btn':  // should always be this
@@ -157,32 +157,57 @@ $(document).ready(function(){
 
 				//game phase select - select character to play
 				case 'select':
-
+					console.log('select phase detected');
+					console.log('objid is: ' + objid);
+					var $objid = $(objid);
+					var chosencharobj = objid.replace('#choose-','');
+					console.log('chosencharobj = '+ chosencharobj);
 					// put clicked character into player object
+					gameobj.player = gameobj[chosencharobj];
+					console.log('chosen player is');
+					console.log(gameobj.player);
 
 					// put player character into #char-chosen-pool
+					$('#char-chosen-pool').append($objid);
 					// remove clickable class
+					$(objid).removeClass('clickable');
+					// add hook for chosen-char
+					$(objid).attr('id', 'chosen-char');
 
 					// put other characters into #char-attack-pool
+					var otherchars = $('#char-select-pool').html();
+					console.log('otherchars: ' + otherchars);
+					$('#char-attack-pool').append(otherchars);
 
 					// show #char-chosen and #char-attackpool, hide #char-select
+					var arr = ['#char-chosen','#char-attackpool', '#char-select'];
+					$.each(arr, function(index, value){
+						gameobj.toggleArea(value);
+					});
+					gameobj.phase = 'attack';
+					
 					break;
 
+				// game phase attack
+				case 'attack':
+					console.log('attack phase detected');
+					// choose defender to attack
+					break;
 
-	
-	
+				// game phase battle
+				case 'battle':
+					console.log();
+					// click attack button
+					break;
 
-			// game phase start
-			// choose character
+				// game phase gameover
+				case 'gameover':
+					console.log();
+					// update game win/loss and display game over section
+					break;
 
-			// game phase battle begin
-			// choose defender to attack
-
-			// game phase battle in progress
-			// click attack button
-
-			// game phase battle over
-			// update game win/loss and display game over section
+				default:
+					alert('wut');
 			} // end game phase switch
 		}
 
@@ -195,10 +220,18 @@ $(document).ready(function(){
 	console.log(game);
 
 	// capture click action
-
-	$('.clickable').on('click', function(){
-		var thisid = '#' + this.id;
-		game.clickHandler(thisid);		
+	$(document).click(function(event){
+		$(event.target).closest('.clickable').each(function(){
+			var thisid = '#' + this.id;
+			console.log(thisid + ' clicked!');
+			game.clickHandler(thisid);
+		});
 	});
+	// $('.clickable').on('click', function(){
+	// 	var thisid = '#' + this.id;
+	// 	console.log(thisid + " has been clicked");
+	// 	game.clickHandler(thisid);	
+
+	// });
 
 });
