@@ -12,7 +12,7 @@ $(document).ready(function(){
 			// current attack power
 			// counter attack power
 		chars: ['char1','char2','char3','char4'],
-		initpanels: ['#char-select','#char-chosen','#char-attackpool','#fight-section','#game-over'],
+		initpanels: ['#char-select-pool','#char-chosen-pool','#char-attack-pool','#char-defender','#chars-defeated'],
 
 		char1: {
 			id: 'char1',
@@ -60,6 +60,8 @@ $(document).ready(function(){
 
 		player: {},
 		defender: {},
+		attacking: false,
+		numAttackers: null,
 
 		//define game phase tracker
 
@@ -83,22 +85,40 @@ $(document).ready(function(){
 			$(areaid).slideToggle();
 		},
 
+		showArea: function(areaid,key) {
+			if (key === undefined) {
+				$(areaid).fadeIn('slow');
+			} else {
+				$(areaid).fadeIn(key);
+			}
+
+		},
+
+		hideArea: function(areaid,key) {
+			if (key === undefined) {
+				$(areaid).fadeOut('slow');
+			} else {
+				$(areaid).fadeOut(key);
+			}
+		},
+
 		initializeGame: function(){
 			var charkeys = this.chars;
-			var areakeys = this.initpanels;
 			var gameobj = this;
 			console.log('Char Array: ' + charkeys);
 			$.each(charkeys, function(index, value){ // reset hp and attack power
 				console.log(index + ': ' + value);
 				gameobj.resetChar(value);
 			});
+			gameobj.numAttackers = 2;
 		},
 
-		toggleAllPanels: function(){
-
-			// $.each(areakeys, function(index, value){ // hide or show game areas
-			// 	gameobj.toggleArea(value);	
-			// });			
+		clearAllPanels: function(){
+			var areakeys = this.initpanels;
+			var gameobj = this;
+			$.each(areakeys, function(index, value){ // clear game areas
+				$(value).empty();	
+			});			
 		},
 
 		createTile: function(objid,targetid){
@@ -125,12 +145,76 @@ $(document).ready(function(){
 
 		},
 
+		createSelectPool: function(){
+			var charkeys = this.chars;
+			var gameobj = this;
+			$.each(charkeys, function(index, value){
+				gameobj.createTile(value,'#char-select-pool');
+			});
+		},
+
+		fightText: function(text,classadd,classremove){
+			$('#fight-text').text(text).addClass(classadd).removeClass(classremove);
+		},
+
+		resolveRound: function(playerobj, defenderobj){
+			var gameobj = this;
+			// resolve an attack round.  Player's tile is always #chosen-char
+			var defenderid = '#choose-'+defenderobj.id;
+			console.log('resolving attack round');
+			console.log('playerobj: #chosen-char');
+			console.log(playerobj);
+			console.log('defenderobj:');
+			console.log(defenderid);
+			console.log(defenderobj);
+			// player attacks defender ( defender.currhp - player.curratk )
+				// update defender hp
+			console.log('Player attacks defender:')
+			console.log(defenderobj.currhp + '=' + defenderobj.currhp + '-' + playerobj.curratk);
+			var temphp = defenderobj.currhp - playerobj.curratk;
+			if (temphp <= 0) { 
+				defenderobj.currhp = 0;
+
+				// if defender dead, if there are more attackers, choose a new one, or else game won
+				if (gameobj.numAttackers > 0) {
+					
+					gameobj.numAttackers--;
+					gameobj.fightText('Choose a new enemy to attack!');
+					gameobj.attacking = false;
+					gameobj.phase = 'attack';
+				} else {
+					gameobj.phase = 'gameover';
+					$('#game-over-title').text('You emerged victorious!');
+					$('#game-over-text').text('After so many rounds of battle, you are battered and bruised. Yet you live to fight again.');
+					$('#replay-btn').text('Play Again');
+					gameobj.hideArea('#char-attackpool','fast');
+					gameobj.hideArea('#fight-section','fast');
+					gameobj.showArea('#game-over','fast');
+				}
+
+				$(defenderid).fadeOut;
+				$('#chars-defeated').append($(defenderid));
+
+			} else { 
+				defenderobj.currhp = defenderobj.currhp - playerobj.curratk; 
+			}
+			$(defenderid).children('.character-hp').text(defenderobj.currhp);
+				// increase player curratk power
+			playerobj.curratk = playerobj.curratk + 10;
+
+				
+			// defender attacks player ( player.currhp - defender.cntrattk )
+				// update player hp
+				// if player is dead, trigger game over
+			console.log('Round resolved.');
+		},
+
 		clickHandler: function(objid){
 		//define click action functions
 			console.log('clickHandler called:');
 			console.log(this);
 			var charkeys = this.chars;
-			var areakeys = this.initpanels;
+			// var areakeys = this.initpanels;
 			var gameobj = this;
 			var $objid = $(objid);
 			var chosencharobj = objid.replace('#choose-','');
@@ -144,14 +228,15 @@ $(document).ready(function(){
 						case '#replay-btn':  // should always be this
 							
 							// populate #char-select-pool
-							$.each(charkeys, function(index, value){
-								gameobj.createTile(value,'#char-select-pool');
-							});
+							gameobj.createSelectPool();
+							// $.each(charkeys, function(index, value){
+							// 	gameobj.createTile(value,'#char-select-pool');
+							// });
 							
 							// show char select and update game phase
 							gameobj.phase = 'select';
-							gameobj.toggleArea('#char-select');
-							gameobj.toggleArea('#game-over');
+							gameobj.showArea('#char-select');
+							gameobj.hideArea('#game-over');
 						break;
 
 						default:
@@ -178,9 +263,14 @@ $(document).ready(function(){
 					$objid.attr('id', 'chosen-char');
 
 					// put other characters into #char-attack-pool
-					var otherchars = $('#char-select-pool').html();
-					console.log('otherchars: ' + otherchars);
-					$('#char-attack-pool').append(otherchars);
+
+					// bugged code: this doesn't move original divs
+					// var otherchars = $('#char-select-pool').html();
+					// console.log('otherchars: ' + otherchars);
+					// $('#char-attack-pool').append(otherchars);
+
+					// update for bugged code - get divs in #char-select-pool
+					$('#char-attack-pool').append($('#char-select-pool').children());
 
 
 					// show #char-chosen and #char-attackpool, hide #char-select
@@ -196,22 +286,100 @@ $(document).ready(function(){
 				case 'attack':
 					console.log('attack phase detected');
 					// choose defender to attack and move to #char-defender
-					$('#char-defender').append($objid);
-					$(objid).remove();
+					
+					// bugged code: no longer moves defender after updating char-select-pool bug
+					// $('#char-defender').append($objid);
+					// $(objid).remove();
 
-					// put values of chosen defender into defender object
-					gameobj.defender = gameobj[chosencharobj];
-					console.log('defender object is:');
-					console.log(gameobj.defender);
+					// update for bugged code - append actual div of defender chosen
+					console.log('checking clicked thing: '+objid);
+					if (objid === '#attack-btn') {
+						gameobj.fightText('You must choose an enemy before you can attack!','warning','default');
+					} else {
+						$('#char-defender').append($objid);
 
-					// display #fight-section
-					gameobj.toggleArea('#fight-section');
-					gameobj.phase = 'battle';
+						// put values of chosen defender into defender object
+						gameobj.defender = gameobj[chosencharobj];
+						console.log('defender object is:');
+						console.log(gameobj.defender);
+
+						// display #fight-section
+						gameobj.showArea('#fight-section');
+						gameobj.phase = 'battle';
+					}
 					break;
 
 				// game phase battle
 				case 'battle':
 					console.log('battle phase detected');
+					console.log('current gameobj is: ');
+					console.log(gameobj);
+					// check parent id of clicked item
+					console.log('Parent id is: ' + $(objid).parent().attr('id'));
+					var $parentid = $(objid).parent().attr('id');
+					switch ($parentid) {
+
+						case 'char-defender': 
+						// if it is char-defender, remove the defender and put back in #char-attack-pool, change game phase back to attack
+							if (!gameobj.attacking) {
+								console.log('Defender was clicked. Moving back to pool.');
+								// clear current defender
+								gameobj.defender = {};
+								console.log('defender object is now cleared:');
+								console.log(gameobj.defender);
+								// move defender back to pool
+								$('#char-attack-pool').append($objid);
+								// change game phase back to attack
+								gameobj.toggleArea('#fight-section');
+								gameobj.phase = 'attack';
+							} else {
+								gameobj.fightText('You\'re in the heat of battle, you can\'t retreat!','warning','default');
+							}
+							break;
+
+						case 'char-attack-pool':
+						// if it is char-attack-pool, swap the characters
+							if (!gameobj.attacking) {
+								console.log('Another character was chosen. Swapping characters.');
+
+								// switch current defender
+								console.log('swapping defenders, new defender is: ' + objid + '/' + chosencharobj);
+
+								
+								// update current defender's original char
+								var $orig = $('#char-defender > div');
+								var $origchar = $orig.attr('charid');
+								var $origcharid = '#' + $orig.attr('id');
+								console.log('old defender is: ' + $origcharid);
+								gameobj[$origchar] = gameobj.defender;
+								gameobj.defender = gameobj[chosencharobj];
+								console.log('swapped defenders: ');
+								console.log(gameobj);
+
+								// swap tiles
+								$('#char-attack-pool').append($($origcharid));
+								$('#char-defender').append($(objid));
+								console.log('characters swapped');
+							} else {
+								gameobj.fightText('You\'re in the head of battle, you can\'t change attackers now!','warning','default');
+							}
+							break;
+
+						case 'char-attackbtn':
+						// if it is char-attackbtn, then attack!
+							console.log('ATTAAAAAAACK!');
+							gameobj.attacking = true;
+							gameobj.fightText('You engage in a round of battle!','default','warning');
+							var playerobj = gameobj.player;
+							var defenderobj = gameobj.defender;
+							gameobj.resolveRound(playerobj,defenderobj);
+							break;
+
+						default: 
+							alert('i dunno what happened in the battle phase');
+					}
+					
+					
 					
 					break;
 
@@ -219,6 +387,13 @@ $(document).ready(function(){
 				case 'gameover':
 					console.log('gameover phase detected');
 					// update game win/loss and display game over section
+					gameobj.clearAllPanels();
+					gameobj.initializeGame();
+					gameobj.createSelectPool();
+					gameobj.phase = 'select';
+					gameobj.hideArea('#char-chosen',0);
+					gameobj.hideArea('#game-over',0);
+					gameobj.showArea('#char-select');
 					break;
 
 				default:

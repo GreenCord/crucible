@@ -216,10 +216,15 @@
 		border-color: darkred;
 	}
 
-	#char-defender .character-tile {
+	#char-defender .character-tile,
+	#chars-defeated .character-tile {
 		background: #0e0e0e;
 		color: #fefefe;
 		border-color: black;
+	}
+
+	#chars-defeated .character-tile {
+		opacity: 0.5;
 	}
 
 	.character-pic {
@@ -229,6 +234,14 @@
 	.character-pic img {
 		width: 100%;
 		height: auto;
+	}
+
+	#fight-text.default {
+		color: #0e0e0e;
+	}
+
+	#fight-text.warning {
+		color: #cc0000;
 	}
 
 	#char-attackbtn button, #game-over button {
