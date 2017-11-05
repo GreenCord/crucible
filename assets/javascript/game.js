@@ -116,6 +116,7 @@ $(document).ready(function(){
             var createid = 'choose-' + gameobjid.id;
             $(targetid).append('<div id="' + createid + '"></div>');
             var newdiv = $('#'+createid);
+            newdiv.attr('charid', gameobjid.id);
             newdiv.addClass('character-tile clickable');
             newdiv.append('<div class="character-name">' + gameobjid.name + '</div>');
             newdiv.append('<div class="character-pic" alt="'+ gameobjid.name + '">' + gameobjid.image + '</div>');
@@ -192,6 +193,7 @@ $(document).ready(function(){
 				case 'attack':
 					console.log('attack phase detected');
 					// choose defender to attack
+					
 					break;
 
 				// game phase battle
