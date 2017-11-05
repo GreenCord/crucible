@@ -3,14 +3,6 @@ $(document).ready(function(){
 	// define game object
 	var game = {
 
-		//define characters
-			// name
-			// image
-			// hit points
-			// current hit points
-			// attack power
-			// current attack power
-			// counter attack power
 		chars: ['char1','char2','char3','char4'],
 		initpanels: ['#char-select-pool','#char-chosen-pool','#char-attack-pool','#char-defender','#chars-defeated'],
 
@@ -18,83 +10,72 @@ $(document).ready(function(){
 			id: 'char1',
 			name: 'Character 1',
 			image: '<img src="https://placehold.it/320x240" alt="Character 1" />',
-			basehp: 100,
-			currhp: null,
-			baseatk: 5,
-			curratk: null,
-			cntratk: 10
+			basehp: 100, // base/default HP
+			currhp: null,  // current HP during game
+			baseatk: 8,  // base attack power as player
+			curratk: null, // current attack power as player during game
+			cntratk: 10 // counter attack as enemy
 		},
 
 		char2: {
 			id: 'char2',
 			name: 'Character 2',
 			image: '<img src="https://placehold.it/320x240" alt="Character 2" />',
-			basehp: 100,
+			basehp: 130,
 			currhp: null,
-			baseatk: 5,
+			baseatk: 10,
 			curratk: null,
-			cntratk: 50
+			cntratk: 15
 		},
 
 		char3: {
 			id: 'char3',
 			name: 'Character 3',
 			image: '<img src="https://placehold.it/320x240" alt="Character 3" />',
-			basehp: 100,
+			basehp: 110,
 			currhp: null,
 			baseatk: 5,
 			curratk: null,
-			cntratk: 10
+			cntratk: 20
 		},
 
 		char4: {
 			id: 'char4',
 			name: 'Character 4',
 			image: '<img src="https://placehold.it/320x240" alt="Character 4" />',
-			basehp: 100,
+			basehp: 120,
 			currhp: null,
-			baseatk: 5,
+			baseatk: 7,
 			curratk: null,
-			cntratk: 10
+			cntratk: 6
 		},
 
 		player: {},
 		defender: {},
 		attacking: false,
 		numAttackers: null,
+		phase: 'pregame', // game phase tracker | possible phases: pregame, select, begin, battle, gameover
 
-		//define game phase tracker
-
-		phase: 'pregame', // possible phases: pregame, select, begin, battle, gameover
-
-		//define game initialization
-
-		resetChar: function(objid) {
+		resetChar: function(objid) {  // resets the character object passed in to its original values
 			console.log('Resetting: ' + objid);
 			var character = this[objid];
 			character.currhp = character.basehp;
 			character.curratk = character.baseatk;
 		},
 
-		toggleArea: function(areaid) {
-			// if ($(areaid).is(':hidden')) {
-			// 	$(areaid).show();
-			// } else {
-			// 	$(areaid).hide();
-			// }
+		toggleArea: function(areaid) { // toggles visibility of area passed in
 			$(areaid).slideToggle();
 		},
 
-		showArea: function(areaid,key) {
+		showArea: function(areaid,key) { // show an area
 			if (key === undefined) {
 				$(areaid).fadeIn('slow');
 			} else {
 				$(areaid).fadeIn(key);
 			}
-
 		},
 
-		hideArea: function(areaid,key) {
+		hideArea: function(areaid,key) { // hide an area
 			if (key === undefined) {
 				$(areaid).fadeOut('slow');
 			} else {
@@ -102,7 +83,7 @@ $(document).ready(function(){
 			}
 		},
 
-		initializeGame: function(){
+		initializeGame: function(){ // initializes game
 			var charkeys = this.chars;
 			var gameobj = this;
 			console.log('Char Array: ' + charkeys);
@@ -113,22 +94,21 @@ $(document).ready(function(){
 			gameobj.numAttackers = 2;
 		},
 
-		clearAllPanels: function(){
+		clearAllPanels: function(){ // clears characters from game board
 			var areakeys = this.initpanels;
 			var gameobj = this;
-			$.each(areakeys, function(index, value){ // clear game areas
+			$.each(areakeys, function(index, value){ 
 				$(value).empty();	
 			});			
 		},
 
-		createTile: function(objid,targetid){
-			/* Tile structure
+		createTile: function(objid,targetid){ // creates character tiles
+			/* Tile structure for reference
 			<div id="" class="character-tile clickable">
                 <div class="character-name">Character 1</div>
                 <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
                 <div class="character-hp">100</div>
-            </div> 
-            */
+            </div> */
             var gameobjid = this[objid];
             console.log('Creating tiles');
             console.log('objid = ' + objid);
@@ -142,10 +122,9 @@ $(document).ready(function(){
             newdiv.append('<div class="character-name">' + gameobjid.name + '</div>');
             newdiv.append('<div class="character-pic" alt="'+ gameobjid.name + '">' + gameobjid.image + '</div>');
             newdiv.append('<div class="character-hp">' + gameobjid.currhp + '</div>');
-
 		},
 
-		createSelectPool: function(){
+		createSelectPool: function(){ // populates the character select pool
 			var charkeys = this.chars;
 			var gameobj = this;
 			$.each(charkeys, function(index, value){
@@ -153,20 +132,15 @@ $(document).ready(function(){
 			});
 		},
 
-		fightText: function(text,classadd,classremove){
+		fightText: function(text,classadd,classremove){ // update the fight text area
 			$('#fight-text').text(text).addClass(classadd).removeClass(classremove);
 		},
 
-		resolveRound: function(playerobj, defenderobj){
+		resolveRound: function(playerobj, defenderobj){ // handles attack round
 			var gameobj = this;
 			// resolve an attack round.  Player's tile is always #chosen-char
 			var defenderid = '#choose-'+defenderobj.id;
 			console.log('resolving attack round');
-			console.log('playerobj: #chosen-char');
-			console.log(playerobj);
-			console.log('defenderobj:');
-			console.log(defenderid);
-			console.log(defenderobj);
 			// player attacks defender ( defender.currhp - player.curratk )
 				// update defender hp
 			console.log('Player attacks defender:')
@@ -177,7 +151,6 @@ $(document).ready(function(){
 
 				// if defender dead, if there are more attackers, choose a new one, or else game won
 				if (gameobj.numAttackers > 0) {
-					
 					gameobj.numAttackers--;
 					gameobj.fightText('Choose a new enemy to attack!');
 					gameobj.attacking = false;
@@ -225,127 +198,57 @@ $(document).ready(function(){
 			console.log('Round resolved.');
 		},
 
-		clickHandler: function(objid){
-		//define click action functions
-			console.log('clickHandler called:');
-			console.log(this);
+		clickHandler: function(objid){ //define click action functions
 			var charkeys = this.chars;
-			// var areakeys = this.initpanels;
 			var gameobj = this;
 			var $objid = $(objid);
 			var chosencharobj = objid.replace('#choose-','');
-			console.log('chosencharobj: ' + chosencharobj);
 			switch (this.phase) {
-				// game phase pregame
-				case 'pregame': 
-					console.log('pregame phase detected');
-					switch (objid) { // check object clicked
-						
-						case '#replay-btn':  // should always be this
-							
-							// populate #char-select-pool
-							gameobj.createSelectPool();
-							// $.each(charkeys, function(index, value){
-							// 	gameobj.createTile(value,'#char-select-pool');
-							// });
-							
-							// show char select and update game phase
-							gameobj.phase = 'select';
-							gameobj.showArea('#char-select');
-							gameobj.hideArea('#game-over');
-						break;
+				case 'pregame': // game phase pregame
+					if (objid === '#replay-btn') {
+						// populate #char-select-pool and show char select and update game phase
+						gameobj.createSelectPool();
+						gameobj.phase = 'select';
+						gameobj.showArea('#char-select');
+						gameobj.hideArea('#game-over');
+					} else {
+						alert('Something went wrong. (Phase - Pregame, clicked item ' + objid + ')');
+					}
+					break; // end pregame phase
 
-						default:
-							alert('Something went wrong. (Phase - Pregame, clicked item ' + objid + ')');
-
-					} // end pregame switch
-					break;
-
-				//game phase select - select character to play
-				case 'select':
-					console.log('select phase detected');
-					console.log('objid is: ' + objid);
-					console.log('chosencharobj = '+ chosencharobj);
-					// put clicked character into player object
-					gameobj.player = gameobj[chosencharobj];
-					console.log('chosen player is');
-					console.log(gameobj.player);
-
-					// put player character into #char-chosen-pool
-					$('#char-chosen-pool').append($objid);
-					// remove clickable class
-					$objid.removeClass('clickable');
-					// add hook for chosen-char
-					$objid.attr('id', 'chosen-char');
-
-					// put other characters into #char-attack-pool
-
-					// bugged code: this doesn't move original divs
-					// var otherchars = $('#char-select-pool').html();
-					// console.log('otherchars: ' + otherchars);
-					// $('#char-attack-pool').append(otherchars);
-
-					// update for bugged code - get divs in #char-select-pool
-					$('#char-attack-pool').append($('#char-select-pool').children());
-
-
-					// show #char-chosen and #char-attackpool, hide #char-select
-					var arr = ['#char-chosen','#char-attackpool', '#char-select'];
+				case 'select': //game phase select - select character to play
+					gameobj.player = gameobj[chosencharobj]; // put clicked character into player object
+					$('#char-chosen-pool').append($objid); // put player character into #char-chosen-pool
+					$objid.removeClass('clickable'); // remove clickable class
+					$objid.attr('id', 'chosen-char'); // add hook for chosen-char
+					$('#char-attack-pool').append($('#char-select-pool').children()); // put other characters into #char-attack-pool
+					var arr = ['#char-chosen','#char-attackpool', '#char-select']; // show #char-chosen and #char-attackpool, hide #char-select
 					$.each(arr, function(index, value){
 						gameobj.toggleArea(value);
 					});
-					gameobj.phase = 'attack';
-					
-					break;
+					gameobj.phase = 'attack'; // update game phase
+					break; //end select phase
 
-				// game phase attack
-				case 'attack':
-					console.log('attack phase detected');
-					// choose defender to attack and move to #char-defender
-					
-					// bugged code: no longer moves defender after updating char-select-pool bug
-					// $('#char-defender').append($objid);
-					// $(objid).remove();
-
-					// update for bugged code - append actual div of defender chosen
-					console.log('checking clicked thing: '+objid);
-					if (objid === '#attack-btn') {
+				case 'attack': // game phase attack - select an enemy
+					if (objid === '#attack-btn') { // handles replaying games to force an enemy selection
 						gameobj.fightText('You must choose an enemy before you can attack!','warning','default');
 					} else {
 						$('#char-defender').append($objid);
-
-						// put values of chosen defender into defender object
-						gameobj.defender = gameobj[chosencharobj];
-						console.log('defender object is:');
-						console.log(gameobj.defender);
-
-						// display #fight-section
-						gameobj.showArea('#fight-section');
-						gameobj.phase = 'battle';
+						gameobj.defender = gameobj[chosencharobj]; // put values of chosen defender into defender object
+						gameobj.showArea('#fight-section'); // display #fight-section
+						gameobj.phase = 'battle'; // update game phase
 					}
-					break;
+					break; // end attack phase - select an enemy
 
-				// game phase battle
-				case 'battle':
-					console.log('battle phase detected');
-					console.log('current gameobj is: ');
-					console.log(gameobj);
-					// check parent id of clicked item
-					console.log('Parent id is: ' + $(objid).parent().attr('id'));
-					var $parentid = $(objid).parent().attr('id');
+				case 'battle': // game phase battle
+					var $parentid = $(objid).parent().attr('id'); // get parent id of clicked item
 					switch ($parentid) {
 
 						case 'char-defender': 
 						// if it is char-defender, remove the defender and put back in #char-attack-pool, change game phase back to attack
 							if (!gameobj.attacking) {
-								console.log('Defender was clicked. Moving back to pool.');
-								// clear current defender
 								gameobj.defender = {};
-								console.log('defender object is now cleared:');
-								console.log(gameobj.defender);
-								// move defender back to pool
 								$('#char-attack-pool').append($objid);
-								// change game phase back to attack
 								gameobj.toggleArea('#fight-section');
 								gameobj.phase = 'attack';
 							} else {
@@ -356,26 +259,14 @@ $(document).ready(function(){
 						case 'char-attack-pool':
 						// if it is char-attack-pool, swap the characters
 							if (!gameobj.attacking) {
-								console.log('Another character was chosen. Swapping characters.');
-
-								// switch current defender
-								console.log('swapping defenders, new defender is: ' + objid + '/' + chosencharobj);
-
-								
-								// update current defender's original char
 								var $orig = $('#char-defender > div');
 								var $origchar = $orig.attr('charid');
 								var $origcharid = '#' + $orig.attr('id');
-								console.log('old defender is: ' + $origcharid);
 								gameobj[$origchar] = gameobj.defender;
 								gameobj.defender = gameobj[chosencharobj];
-								console.log('swapped defenders: ');
-								console.log(gameobj);
-
 								// swap tiles
 								$('#char-attack-pool').append($($origcharid));
 								$('#char-defender').append($(objid));
-								console.log('characters swapped');
 							} else {
 								gameobj.fightText('You\'re in the head of battle, you can\'t change attackers now!','warning','default');
 							}
@@ -401,8 +292,7 @@ $(document).ready(function(){
 
 				// game phase gameover
 				case 'gameover':
-					console.log('gameover phase detected');
-					// update game win/loss and display game over section
+					// reinitialize game upon replay
 					gameobj.clearAllPanels();
 					gameobj.initializeGame();
 					gameobj.createSelectPool();
@@ -433,11 +323,5 @@ $(document).ready(function(){
 			game.clickHandler(objid);
 		});
 	});
-	// $('.clickable').on('click', function(){
-	// 	var thisid = '#' + this.id;
-	// 	console.log(thisid + " has been clicked");
-	// 	game.clickHandler(thisid);	
-
-	// });
 
 });
