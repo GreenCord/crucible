@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>"RPG"</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,400i,700,700i,900" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./assets/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/style.css">
+  </head>
+  <body>
+    
+    <!-- Content wrapper to push footer to bottom -->
+    <div id="main-wrapper">
+      <div class="content-wrapper">
+      
+        <header>
+          <h1 id="pageHeader">RPG</h1>
+        </header>
+        
+        <div id="main"><!-- main game area -->
+          <div id="char-select"><!-- character select area -->
+            <h2>Choose your character:</h2>
+            
+            <div id="char-select-pool" class="char-pool">
+              
+              <div class="character-tile">
+                <div class="character-name">Character 1</div>
+                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+              <div class="character-tile">
+                <div class="character-name">Character 2</div>
+                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+              <div class="character-tile">
+                <div class="character-name">Character 3</div>
+                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+              <div class="character-tile">
+                <div class="character-name">Character 4</div>
+                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+            </div>
+            
+          </div><!-- end character select area -->
+          
+          <div id="char-chosen"><!-- character chosen area -->
+            <h2>Your character:</h2>
+             <div class="character-tile">
+                <div class="character-name">Character 1</div>
+                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+          </div><!-- end character chosen area -->
+          
+          <div id="char-attackpool"><!-- enemies to attack area -->
+            <h2>Enemies Available to Attack</h2>
+            <div id=char-attack-pool class="char-pool">
+              <div class="character-tile">
+                <div class="character-name">Character 1</div>
+                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+              <div class="character-tile">
+                <div class="character-name">Character 2</div>
+                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+
+              <div class="character-tile">
+                <div class="character-name">Character 3</div>
+                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+            </div>
+          </div><!-- end enemies to attack area -->
+          
+          <div id="fight-section"><!-- fight section -->
+            <h2>Battleground</h2>
+            <div id="char-attackbtn"><button id="attack-btn">Attack</button></div>
+            <div id="char-defender">
+              <h3>Defender</h3>
+               <div class="character-tile">
+                <div class="character-name">Character 1</div>
+                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
+                <div class="character-hp">100</div>
+              </div>
+            </div>
+          </div><!-- end fight section-->
+
+          <div id="game-over"><!-- game over section -->
+            <h2>Game Over</h2>
+            <div>
+              <p id="game-over-text">The game is over. Play again?</p>
+              <button id="replay-btn">Play again</button>
+            </div>
+          </div><!-- end game over section
+
+        </div><!-- end main game area -->
+      </div><!-- end content wrapper -->
+    </div><!-- end main wrapper -->
+    <div class="footer-wrapper">
+      <footer>
+        <p>&copy; 2017 &ndash; Steven Martinez</p>
+      </footer>
+    </div>
+
+    <!-- Link JS -->
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="./assets/javascript/game.js"></script>
+
+  </body>
+</html>
