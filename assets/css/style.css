@@ -16,13 +16,13 @@
 	}
 
 	h1, h2, h3, h4, h5, h6, label {
-		font-family: Quattrocento, Roboto, Arial, Helvetica, sans-serif;
+		font-family: Roboto, Arial, Helvetica, sans-serif;
 		font-weight: 900;
 		line-height: 1.1;
 		color: #0e0e0e;
 	}
 
-	form input[type="text"], form input[type="email"], form textarea, form input[type="submit"] {
+	form input[type="text"], form input[type="email"], form textarea, form input[type="submit"], button {
 		font-family: Roboto, Arial, Helvetica, sans-serif;
 		font-size: 1rem;
 	}
@@ -163,20 +163,33 @@
 	header h1 {
 		margin: 0;
 	}
+
+/*	.sectionhide { display: none !important; }
+	.sectionshow { display: block !important; }*/
+	.clickable {
+		cursor: pointer !important;
+	}
+
 	#char-select, 
 	#char-chosen, 
 	#char-attackpool, 
-	#fight-section
+	#fight-section,
+	#game-over
 	{
 		padding: 0.75rem;
 		border-bottom: 1px solid tomato;
+	}
+
+	#game-over {
+		text-align: center;
 	}
 
 	#char-select h2, 
 	#char-chosen h2, 
 	#char-attackpool h2, 
 	#fight-section h2, 
-	#fight-section h3 
+	#fight-section h3,
+	#game-over h2 
 	{
 		margin: 0;
 	}
@@ -200,6 +213,13 @@
 	.character-pic img {
 		width: 100%;
 		height: auto;
+	}
+
+	#char-attackbtn button, #game-over button {
+		display: block;
+		width: 100%;
+		padding: 1rem 3rem;
+		margin: 0.75rem auto;
 	}
 
 	/* Footer wrapper - contains footer content */

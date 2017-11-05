@@ -18,90 +18,66 @@
         </header>
         
         <div id="main"><!-- main game area -->
-          <div id="char-select"><!-- character select area -->
+          <div id="char-select" class="sectionhide" style="display: none;"><!-- character select area -->
             <h2>Choose your character:</h2>
             
             <div id="char-select-pool" class="char-pool">
               
-              <div class="character-tile">
+              <!-- <div class="character-tile clickable">
                 <div class="character-name">Character 1</div>
                 <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
                 <div class="character-hp">100</div>
               </div>
 
-              <div class="character-tile">
+              <div class="character-tile clickable">
                 <div class="character-name">Character 2</div>
                 <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
                 <div class="character-hp">100</div>
               </div>
 
-              <div class="character-tile">
+              <div class="character-tile clickable">
                 <div class="character-name">Character 3</div>
                 <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
                 <div class="character-hp">100</div>
               </div>
 
-              <div class="character-tile">
+              <div class="character-tile clickable">
                 <div class="character-name">Character 4</div>
                 <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
                 <div class="character-hp">100</div>
-              </div>
+              </div> -->
 
             </div>
             
           </div><!-- end character select area -->
           
-          <div id="char-chosen"><!-- character chosen area -->
+          <div id="char-chosen" class="sectionhide" style="display: none;"><!-- character chosen area -->
             <h2>Your character:</h2>
-             <div class="character-tile">
-                <div class="character-name">Character 1</div>
-                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
-                <div class="character-hp">100</div>
-              </div>
+            <div id="char-chosen-pool" class="char-pool">
+            </div>
 
           </div><!-- end character chosen area -->
           
-          <div id="char-attackpool"><!-- enemies to attack area -->
+          <div id="char-attackpool" class="sectionhide" style="display: none;"><!-- enemies to attack area -->
             <h2>Enemies Available to Attack</h2>
             <div id=char-attack-pool class="char-pool">
-              <div class="character-tile">
-                <div class="character-name">Character 1</div>
-                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
-                <div class="character-hp">100</div>
-              </div>
-
-              <div class="character-tile">
-                <div class="character-name">Character 2</div>
-                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
-                <div class="character-hp">100</div>
-              </div>
-
-              <div class="character-tile">
-                <div class="character-name">Character 3</div>
-                <div class="character-pic"><img src="https://placehold.it/480x360" alt="char pic" /></div>
-                <div class="character-hp">100</div>
-              </div>
             </div>
           </div><!-- end enemies to attack area -->
           
-          <div id="fight-section"><!-- fight section -->
+          <div id="fight-section" class="sectionhide" style="display: none;"><!-- fight section -->
             <h2>Battleground</h2>
-            <div id="char-attackbtn"><button id="attack-btn">Attack</button></div>
+            <div id="char-attackbtn"><button id="attack-btn" class="clickable">Attack</button></div>
+            <h3>Defender</h3>
             <div id="char-defender">
-              <h3>Defender</h3>
-               <div class="character-tile">
-                <div class="character-name">Character 1</div>
-                <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
-                <div class="character-hp">100</div>
-              </div>
+            
             </div>
           </div><!-- end fight section-->
 
-          <div id="game-over"><!-- game over section -->
-            <h2>Game Over</h2>
+          <div id="game-over" class="sectionshow"><!-- game over section -->
+            <h2 id="game-over-title">Welcome to the game.</h2>
             <div>
-              <p id="game-over-text">The game is over. Play again?</p>
-              <button id="replay-btn">Play again</button>
+              <p id="game-over-text">It's a battle to the finish. Will you be victorious?</p>
+              <button id="replay-btn" class="clickable">Play Game</button>
             </div>
           </div><!-- end game over section
 
