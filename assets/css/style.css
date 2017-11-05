@@ -236,12 +236,18 @@
 		height: auto;
 	}
 
+	#fight-text {
+	}
+
 	#fight-text.default {
 		color: #0e0e0e;
+		background: transparent;
 	}
 
 	#fight-text.warning {
+		padding: 0.75rem;
 		color: #cc0000;
+		background: #fbb9b9;
 	}
 
 	#char-attackbtn button, #game-over button {

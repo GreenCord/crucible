@@ -33,7 +33,7 @@ $(document).ready(function(){
 			currhp: null,
 			baseatk: 5,
 			curratk: null,
-			cntratk: 10
+			cntratk: 50
 		},
 
 		char3: {
@@ -171,8 +171,8 @@ $(document).ready(function(){
 				// update defender hp
 			console.log('Player attacks defender:')
 			console.log(defenderobj.currhp + '=' + defenderobj.currhp + '-' + playerobj.curratk);
-			var temphp = defenderobj.currhp - playerobj.curratk;
-			if (temphp <= 0) { 
+			var tempdefenderhp = defenderobj.currhp - playerobj.curratk;
+			if (tempdefenderhp <= 0) { 
 				defenderobj.currhp = 0;
 
 				// if defender dead, if there are more attackers, choose a new one, or else game won
@@ -196,16 +196,32 @@ $(document).ready(function(){
 				$('#chars-defeated').append($(defenderid));
 
 			} else { 
-				defenderobj.currhp = defenderobj.currhp - playerobj.curratk; 
+				defenderobj.currhp = tempdefenderhp; 
 			}
 			$(defenderid).children('.character-hp').text(defenderobj.currhp);
 				// increase player curratk power
 			playerobj.curratk = playerobj.curratk + 10;
 
-				
-			// defender attacks player ( player.currhp - defender.cntrattk )
+			// defender attacks player ( player.currhp - defender.cntratk )
+			console.log('Defender attacks player:')
+			console.log(playerobj.currhp + '=' + playerobj.currhp + '-' + defenderobj.cntratk);
+			var tempplayerhp = playerobj.currhp - defenderobj.cntratk;
 				// update player hp
+			if (tempplayerhp <= 0) {
+				playerobj.currhp = 0;
 				// if player is dead, trigger game over
+				gameobj.phase = 'gameover';
+				$('#game-over-title').text('You have been defeated.');
+				$('#game-over-text').text('You fought valiantly, but your foes were too powerful.');
+				$('#replay-btn').text('Play Again');
+				gameobj.hideArea('#char-attackpool','fast');
+				gameobj.hideArea('#fight-section','fast');
+				gameobj.showArea('#game-over','fast');
+			} else {  // player still alive
+				playerobj.currhp = tempplayerhp;
+			}
+			$('#chosen-char').children('.character-hp').text(playerobj.currhp);
+
 			console.log('Round resolved.');
 		},
 
