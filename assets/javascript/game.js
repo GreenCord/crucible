@@ -59,6 +59,7 @@ $(document).ready(function(){
 		},
 
 		player: {},
+		defender: {},
 
 		//define game phase tracker
 
@@ -131,6 +132,9 @@ $(document).ready(function(){
 			var charkeys = this.chars;
 			var areakeys = this.initpanels;
 			var gameobj = this;
+			var $objid = $(objid);
+			var chosencharobj = objid.replace('#choose-','');
+			console.log('chosencharobj: ' + chosencharobj);
 			switch (this.phase) {
 				// game phase pregame
 				case 'pregame': 
@@ -160,8 +164,6 @@ $(document).ready(function(){
 				case 'select':
 					console.log('select phase detected');
 					console.log('objid is: ' + objid);
-					var $objid = $(objid);
-					var chosencharobj = objid.replace('#choose-','');
 					console.log('chosencharobj = '+ chosencharobj);
 					// put clicked character into player object
 					gameobj.player = gameobj[chosencharobj];
@@ -171,14 +173,15 @@ $(document).ready(function(){
 					// put player character into #char-chosen-pool
 					$('#char-chosen-pool').append($objid);
 					// remove clickable class
-					$(objid).removeClass('clickable');
+					$objid.removeClass('clickable');
 					// add hook for chosen-char
-					$(objid).attr('id', 'chosen-char');
+					$objid.attr('id', 'chosen-char');
 
 					// put other characters into #char-attack-pool
 					var otherchars = $('#char-select-pool').html();
 					console.log('otherchars: ' + otherchars);
 					$('#char-attack-pool').append(otherchars);
+
 
 					// show #char-chosen and #char-attackpool, hide #char-select
 					var arr = ['#char-chosen','#char-attackpool', '#char-select'];
@@ -192,19 +195,29 @@ $(document).ready(function(){
 				// game phase attack
 				case 'attack':
 					console.log('attack phase detected');
-					// choose defender to attack
-					
+					// choose defender to attack and move to #char-defender
+					$('#char-defender').append($objid);
+					$(objid).remove();
+
+					// put values of chosen defender into defender object
+					gameobj.defender = gameobj[chosencharobj];
+					console.log('defender object is:');
+					console.log(gameobj.defender);
+
+					// display #fight-section
+					gameobj.toggleArea('#fight-section');
+					gameobj.phase = 'battle';
 					break;
 
 				// game phase battle
 				case 'battle':
-					console.log();
-					// click attack button
+					console.log('battle phase detected');
+					
 					break;
 
 				// game phase gameover
 				case 'gameover':
-					console.log();
+					console.log('gameover phase detected');
 					// update game win/loss and display game over section
 					break;
 
@@ -224,9 +237,9 @@ $(document).ready(function(){
 	// capture click action
 	$(document).click(function(event){
 		$(event.target).closest('.clickable').each(function(){
-			var thisid = '#' + this.id;
-			console.log(thisid + ' clicked!');
-			game.clickHandler(thisid);
+			var objid = '#' + this.id;
+			console.log(objid + ' clicked!');
+			game.clickHandler(objid);
 		});
 	});
 	// $('.clickable').on('click', function(){

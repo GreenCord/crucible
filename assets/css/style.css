@@ -206,6 +206,22 @@
 		box-shadow: 0 3px 5px silver;
 	}
 
+	#char-chosen .character-tile {
+		background: lime;
+		border-color: darkgreen;
+	}
+
+	#char-attackpool .character-tile {
+		background: red;
+		border-color: darkred;
+	}
+
+	#char-defender .character-tile {
+		background: #0e0e0e;
+		color: #fefefe;
+		border-color: black;
+	}
+
 	.character-pic {
 		padding: 0.75rem;
 	}
