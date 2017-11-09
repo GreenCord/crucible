@@ -185,7 +185,7 @@ $(document).ready(function(){
 			} else { 
 				defenderobj.currhp = tempdefenderhp; 
 			}
-			$(defenderid).children('.character-currhp').text(defenderobj.currhp);
+			$(defenderid).children('.character-hp').children('.character-currhp').text(defenderobj.currhp);
 				// increase player curratk power
 			playerobj.curratk += playerobj.baseatk;
 
@@ -207,7 +207,7 @@ $(document).ready(function(){
 			} else {  // player still alive
 				playerobj.currhp = tempplayerhp;
 			}
-			$('#chosen-char').children('.character-currhp').text(playerobj.currhp);
+			$('#chosen-char').children('.character-hp').children('.character-currhp').text(playerobj.currhp);
 
 			console.log('Round resolved.');
 		},
