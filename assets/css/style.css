@@ -202,8 +202,16 @@
 		background: #fefefe;
 		border: 1px solid silver;
 		text-align: center;
-		margin-bottom: 0.75rem;
 		box-shadow: 0 3px 5px silver;
+		width: 48%;
+		margin: 1%;
+		margin-right: 2%;
+		margin-left: 0;
+		display: inline-block;
+		vertical-align: middle;	
+	}
+	.character-tile:nth-of-type(2n) {
+		margin-right: 0;
 	}
 
 	#char-chosen .character-tile {
@@ -228,12 +236,29 @@
 	}
 
 	.character-pic {
-		padding: 0.75rem;
+		padding: 0 0.75rem;
 	}
 	
 	.character-pic img {
 		width: 100%;
 		height: auto;
+	}
+
+	.character-hp {
+		position: relative;
+		top: 0; left: 0;
+		display: block;
+		width: 100%;
+		background: darkred;
+	}
+
+	.character-currhp {
+		position: relative;
+		top: 0; left: 0;
+		z-index: 1;
+		display: block;
+		width: 100%;
+		background: forestgreen;
 	}
 
 	#fight-text {
@@ -278,9 +303,7 @@
 		vertical-align: middle;
 	}
 
-	.character-tile:nth-of-type(2n) {
-		margin-right: 0;
-	}
+	
 }
 
 @media only screen and (min-width: 640px) {

@@ -10,6 +10,9 @@ $(document).ready(function(){
 			id: 'char1',
 			name: 'Character 1',
 			image: '<img src="https://placehold.it/320x240" alt="Character 1" />',
+			imagedead: '',
+			imagewin: '',
+			imagelose: '',
 			basehp: 100, // base/default HP
 			currhp: null,  // current HP during game
 			baseatk: 8,  // base attack power as player
@@ -21,6 +24,9 @@ $(document).ready(function(){
 			id: 'char2',
 			name: 'Character 2',
 			image: '<img src="https://placehold.it/320x240" alt="Character 2" />',
+			imagedead: '',
+			imagewin: '',
+			imagelose: '',
 			basehp: 130,
 			currhp: null,
 			baseatk: 10,
@@ -32,6 +38,9 @@ $(document).ready(function(){
 			id: 'char3',
 			name: 'Character 3',
 			image: '<img src="https://placehold.it/320x240" alt="Character 3" />',
+			imagedead: '',
+			imagewin: '',
+			imagelose: '',
 			basehp: 110,
 			currhp: null,
 			baseatk: 5,
@@ -43,6 +52,9 @@ $(document).ready(function(){
 			id: 'char4',
 			name: 'Character 4',
 			image: '<img src="https://placehold.it/320x240" alt="Character 4" />',
+			imagedead: '',
+			imagewin: '',
+			imagelose: '',
 			basehp: 120,
 			currhp: null,
 			baseatk: 7,
@@ -107,7 +119,9 @@ $(document).ready(function(){
 			<div id="" class="character-tile clickable">
                 <div class="character-name">Character 1</div>
                 <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
-                <div class="character-hp">100</div>
+                <div class="character-hp">
+                	<div class="character-currhp">100</div>
+                </div>
             </div> */
             var gameobjid = this[objid];
             console.log('Creating tiles');
@@ -121,7 +135,7 @@ $(document).ready(function(){
             newdiv.addClass('character-tile clickable');
             newdiv.append('<div class="character-name">' + gameobjid.name + '</div>');
             newdiv.append('<div class="character-pic" alt="'+ gameobjid.name + '">' + gameobjid.image + '</div>');
-            newdiv.append('<div class="character-hp">' + gameobjid.currhp + '</div>');
+            newdiv.append('<div class="character-hp"><div class="character-currhp">' + gameobjid.currhp + '</div></div>');
 		},
 
 		createSelectPool: function(){ // populates the character select pool
@@ -171,7 +185,7 @@ $(document).ready(function(){
 			} else { 
 				defenderobj.currhp = tempdefenderhp; 
 			}
-			$(defenderid).children('.character-hp').text(defenderobj.currhp);
+			$(defenderid).children('.character-currhp').text(defenderobj.currhp);
 				// increase player curratk power
 			playerobj.curratk += playerobj.baseatk;
 
@@ -193,7 +207,7 @@ $(document).ready(function(){
 			} else {  // player still alive
 				playerobj.currhp = tempplayerhp;
 			}
-			$('#chosen-char').children('.character-hp').text(playerobj.currhp);
+			$('#chosen-char').children('.character-currhp').text(playerobj.currhp);
 
 			console.log('Round resolved.');
 		},
