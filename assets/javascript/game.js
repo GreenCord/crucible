@@ -8,6 +8,11 @@ $(document).ready(function(){
 
 		chars: ['char1','char2','char3','char4'],
 		initpanels: ['#char-select-pool','#char-chosen-pool','#char-attack-pool','#char-defender','#chars-defeated'],
+		player: {},	// during battle, this is the player's object
+		defender: {}, // during battle, this is the defender's object
+		attacking: false, // when true, player has attacked an opponent and can't switch
+		numAttackers: null, // number of attackers to face (0 based)
+		phase: 'pregame', // game phase tracker | possible phases: pregame, select, begin, battle, gameover
 
 		// audio
 		intromusic: new Audio('./assets/sounds/game.ogg'),
@@ -19,6 +24,7 @@ $(document).ready(function(){
 		hitsound: new Audio('./assets/sounds/hit.ogg'),
 		defenderdeath: new Audio('./assets/sounds/defender-death.ogg'),
 		playerdeath: new Audio('./assets/sounds/player-death.ogg'),
+		
 		// characters
 		char1: {
 			id: 'char1',
@@ -84,12 +90,6 @@ $(document).ready(function(){
 			quarterhealth: 'Green Elf is about to die.'
 		},
 
-		player: {},
-		defender: {},
-		attacking: false,
-		numAttackers: null,
-		phase: 'pregame', // game phase tracker | possible phases: pregame, select, begin, battle, gameover
-
 		resetChar: function(objid) {  // resets the character object passed in to its original values
 			console.log('Resetting: ' + objid);
 			var character = this[objid];
@@ -118,22 +118,19 @@ $(document).ready(function(){
 		},
 
 		initializeGame: function(){ // initializes game
+			var areakeys = this.initpanels;
 			var charkeys = this.chars;
 			var gameobj = this;
 			console.log('Char Array: ' + charkeys);
+			$.each(areakeys, function(index, value){ // clears all characters from game board
+				$(value).empty();	
+			});			
 			$.each(charkeys, function(index, value){ // reset hp and attack power
 				console.log(index + ': ' + value);
 				gameobj.resetChar(value);
 			});
 			gameobj.numAttackers = 2;
-		},
-
-		clearAllPanels: function(){ // clears characters from game board
-			var areakeys = this.initpanels;
-			var gameobj = this;
-			$.each(areakeys, function(index, value){ 
-				$(value).empty();	
-			});			
+			game.playSound(game.intromusic,true);
 		},
 
 		createTile: function(objid,targetid){ // creates character tiles
@@ -203,7 +200,6 @@ $(document).ready(function(){
 					gameobj.showArea('#game-over','fast');
 				}
 
-				$(defenderid).fadeOut();
 				$('#chars-defeated').append($(defenderid));
 
 			} else { 
@@ -333,7 +329,7 @@ $(document).ready(function(){
 					switch ($parentid) {
 
 						case 'char-defender': 
-						// if it is char-defender, remove the defender and put back in #char-attack-pool, change game phase back to attack
+						// if thing clicked is char-defender, remove the defender and put back in #char-attack-pool, change game phase back to attack
 							if (!gameobj.attacking) {
 								gameobj.defender = {};
 								$('#char-attack-pool').append($objid);
@@ -341,13 +337,13 @@ $(document).ready(function(){
 								gameobj.playSound(gameobj.charselect,false);
 								gameobj.playSound(gameobj.intromusic,true);
 								gameobj.phase = 'attack';
-							} else {
+							} else { // catches when player clicks on defender while actively in battle
 								gameobj.fightText('You\'re in the heat of battle, you can\'t retreat!','warning','default','caution');
 							}
 							break;
 
 						case 'char-attack-pool':
-						// if it is char-attack-pool, swap the characters
+						// if thing clicked is in the char-attack-pool, swap it with defender
 							if (!gameobj.attacking) {
 								var $orig = $('#char-defender > div');
 								var $origchar = $orig.attr('charid');
@@ -358,7 +354,7 @@ $(document).ready(function(){
 								$('#char-attack-pool').append($($origcharid));
 								$('#char-defender').append($(objid));
 								gameobj.playSound(gameobj.charselect,false);
-							} else {
+							} else { // catches when player clicks on attacker pool while actively in battle
 								gameobj.fightText('You\'re in the heat of battle, you can\'t change attackers now!','warning','default','caution');
 							}
 							break;
@@ -369,13 +365,11 @@ $(document).ready(function(){
 							gameobj.playSound(gameobj.hitsound,false);
 							gameobj.attacking = true;
 							gameobj.fightText('You engage in a round of battle!','default','warning','caution');
-							var playerobj = gameobj.player;
-							var defenderobj = gameobj.defender;
-							gameobj.resolveRound(playerobj,defenderobj);
+							gameobj.resolveRound(gameobj.player,gameobj.defender);
 							break;
 
 						default: 
-							alert('i dunno what happened in the battle phase');
+							alert('i dunno what happened in the battle phase'); // this should never trigger
 					}
 					
 					
@@ -385,10 +379,8 @@ $(document).ready(function(){
 				// game phase gameover
 				case 'gameover':
 					// reinitialize game upon replay
-					gameobj.clearAllPanels();
 					gameobj.initializeGame();
 					gameobj.createSelectPool();
-					gameobj.playSound(game.intromusic,true);
 					gameobj.phase = 'select';
 					gameobj.hideArea('#char-chosen',0);
 					gameobj.hideArea('#game-over',0);
@@ -405,7 +397,7 @@ $(document).ready(function(){
 	
 	// initialize game
 	game.initializeGame();
-	game.playSound(game.intromusic,true);
+	
 	// capture click action
 	$(document).click(function(event){
 		$(event.target).closest('.clickable').each(function(){
