@@ -179,7 +179,7 @@ $(document).ready(function(){
 			console.log('resolving attack round');
 			// player attacks defender ( defender.currhp - player.curratk )
 				// update defender hp
-			console.log('Player attacks defender:')
+			console.log('Player attacks defender:');
 			console.log(defenderobj.currhp + '=' + defenderobj.currhp + '-' + playerobj.curratk);
 			var tempdefenderhp = defenderobj.currhp - playerobj.curratk;
 			if (tempdefenderhp <= 0) { 
@@ -203,7 +203,7 @@ $(document).ready(function(){
 					gameobj.showArea('#game-over','fast');
 				}
 
-				$(defenderid).fadeOut;
+				$(defenderid).fadeOut();
 				$('#chars-defeated').append($(defenderid));
 
 			} else { 
@@ -216,7 +216,7 @@ $(document).ready(function(){
 			playerobj.curratk += playerobj.baseatk;
 
 			// defender attacks player ( player.currhp - defender.cntratk )
-			console.log('Defender attacks player:')
+			console.log('Defender attacks player:');
 			console.log(playerobj.currhp + '=' + playerobj.currhp + '-' + defenderobj.cntratk);
 			var tempplayerhp = playerobj.currhp - defenderobj.cntratk;
 				// update player hp

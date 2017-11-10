@@ -1,35 +1,39 @@
-* { box-sizing: border-box; }
+html { box-sizing: border-box; }
+*, *:before, *:after {
+	box-sizing: inherit;
+}
 
 @media screen { /* Mobile first */
 
 	/* Screen styles only - separate from print styles */
-	
+
 	html, body {
 		font: 18px/1.5 'New Rocker', Arial, Helvetica, sans-serif;
 		height: 100%;
 	}
 
 	body {
+		background: #fefefe url('../images/cavetile.jpg') 50% 50% repeat;
 		display: flex;
 		flex-direction: column;
-		background: #fefefe url('../images/cavetile.jpg') 50% 50% repeat;
+		
 
 	}
 
 	h1, h2, h3, h4, h5, h6, label {
+		color: #0e0e0e;
 		font-family: 'New Rocker', Arial, Helvetica, sans-serif;
 		font-weight: 900;
 		line-height: 1.1;
-		color: #0e0e0e;
 	}
 
-	#pageHeader, button {
+	.title, button {
 		font-family: 'Trade Winds', 'Roboto', Arial, Helvetica, sans-serif;
 	}
 
-	#pageHeader {
-		font-size: 3.75rem;
+	.title {
 		color: yellow;
+		font-size: 3.75rem;
 		text-shadow: 0 9px 0 #0e0e0e;
 	}
 
@@ -52,32 +56,26 @@
 	}
 
 	p, code, blockquote {  
-		margin: 0 0 1.5rem;
 		color: #17160a;
+		margin: 0 0 1.5rem;
 	}
 
 	p {
 		font-size: 1rem;
 		line-height: 1.5;
-		word-break: break-all;
-		word-break: break-word;
-		-webkit-hyphens: auto;
-		-moz-hyphens: auto;
-		-ms-hyphens: auto;
-		hyphens: auto;
 		/*text-align: justify;*/
 	}
 
 	p+p { 
-		text-indent: 2rem;
 		margin-top: -1.5rem; 
+		text-indent: 2rem;
 	}
 
 	code,
 	pre {
-		line-height: 1;
 		font-family: 'Lucida Console', Monaco, monospace, serif;
 		font-size: 1rem;
+		line-height: 1;
 	}
 
 	blockquote {
@@ -91,14 +89,14 @@
 		padding-right: .4rem;
 	}
 
-	h1 { font-size: 3rem;		line-height: 1;		margin-bottom: 2.0rem; 		}
+	h1 { font-size: 3rem;		line-height: 1;		margin-bottom: 2.0rem; 				}
 	h2 { font-size: 2rem;		line-height: 1.1; 	margin-bottom: 1.33333rem;	}
-	h3 { font-size: 1.5rem;		line-height: 1.1;	margin-bottom: 1.0rem; 		}
+	h3 { font-size: 1.5rem;		line-height: 1.1;	margin-bottom: 1.0rem; 			}
 	h4 { font-size: 1.25rem;	line-height: 1.1;	margin-bottom: 0.83333rem; 	}
 	h5 { font-size: 1.125rem;	line-height: 1.1; 	margin-bottom: 0.75rem; 	}
-	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem	}
+	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem			}
 
-	a { text-decoration: none; border: 1px solid transparent; }
+	a { border: 1px solid transparent; text-decoration: none; }
 	
 	a:link {
 		border-bottom: 1px solid blue;
@@ -122,54 +120,54 @@
 	em { font-style: italic; }
 	sup { 
 		font-size: 0.75rem; 
-		vertical-align: top; 
 		position: relative;
 		top: -2px; 
+		vertical-align: top; 
 	}
 
 	hr {
+		background: #0c1200;
+	  background: transparent -webkit-linear-gradient(left, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
+	  background: transparent -o-linear-gradient(left, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
+	  background: transparent linear-gradient(to right, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
 		border: 0;
-    	height: 1px;
-    	background: #0c1200;
-	    background: transparent -webkit-linear-gradient(left, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
-	    background: transparent -o-linear-gradient(left, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
-	    background: transparent linear-gradient(to right, rgba(12, 18, 0, 0), rgba(12, 18, 0, 0.75), rgba(12, 18, 0, 0));
+    height: 1px;
 	 }
 
 	/* Accessible Skip to Content */
 	.skip-to-content {
-		position:absolute;
-		left:-10000px;
-		top:auto;
-		width:1px;
-		height:1px;
-		overflow:hidden;
+		height: 1px;
+		left: -10000px;
+		overflow: hidden;
+		position: absolute;
+		top: auto;
+		width: 1px;
 	}
 
 	.skip-to-content:focus {
 		display: block;
-		text-align: center;
-		position:relative;
-		top: 0;
-		left: 0;
-		width: auto;
 		height: auto;
+		left: 0;
+		position:relative;
+		text-align: center;
+		top: 0;
+		width: auto;
 	}
 	/* End Accessible Skip to Content */
 
 
 	/* Main wrapper - contains all content except footer. Flexed to push footer to bottom in modern browsers */
-	#main-wrapper {
+	.flex-wrapper {
 		flex: 1 0 auto; 
-		width: 100%; 
 		margin: 0; 
 		padding: 0;
+		width: 100%;
 	}
 	/* End main wrapper */
 
 	.content-wrapper {
-		max-width: 1280px;
 		margin: 0 auto;
+		max-width: 1280px;
 	}
 
 	header {
@@ -192,18 +190,16 @@
 	#fight-section,
 	#game-over
 	{
-		padding: 0.75rem;
-		text-align: center;
+		background: rgb(150,145,142);
     background: rgba(150, 145, 142, 0.67);
-    margin: 1rem;
-    border-radius: 25px 0 25px 0;
     border: 5px;
+    border-color: rgb(68,46,24);
     border-color: rgba(68,46,24,0.33);
+    border-radius: 25px 0 25px 0;
     border-style: ridge;
-	}
-
-	#game-over {
-		
+    margin: 1rem;
+    padding: 0.75rem;
+		text-align: center;
 	}
 
 	#char-select h2, 
@@ -223,14 +219,14 @@
 	.character-tile {
 		background: #fefefe;
 		border: 1px solid silver;
-		text-align: center;
 		box-shadow: 0 3px 5px silver;
-		width: 48%;
-		margin: 1%;
-		margin-right: 2%;
-		margin-left: 0;
 		display: inline-block;
+		margin: 1%;
+		margin-left: 0;
+		margin-right: 2%;
+		text-align: center;
 		vertical-align: middle;	
+		width: 48%;
 	}
 	.character-tile:nth-of-type(2n) {
 		margin-right: 0;
@@ -248,8 +244,8 @@
 
 	.character-tile {
 		background: #0e0e0e;
-		color: #fefefe;
 		border-color: black;
+		color: #fefefe;
 		text-shadow: 1px 1px 1px #0e0e0e;
 	}
 
@@ -262,8 +258,8 @@
 	}
 	
 	.character-pic img {
-		width: 100%;
 		height: auto;
+		width: 100%;
 	}
 
 	.character-hp {
@@ -316,10 +312,10 @@
 
 	/* Footer wrapper - contains footer content */
 	.footer-wrapper {
-		padding: 0.75rem;
-		text-align: center;
 		background: #efefef;
 		box-shadow: 0 -5px 25px #0e0e0e;
+		padding: 0.75rem;
+		text-align: center;
 	}
 
 	.footer-wrapper p {
@@ -337,11 +333,11 @@
 	
 	.character-tile {
 		display: inline-block;
-		width: 48%;
 		margin: 1%;
 		margin-left: 0;
 		margin-right: 2%;
 		vertical-align: middle;
+		width: 48%;
 	}
 
 	
@@ -350,8 +346,8 @@
 @media only screen and (min-width: 640px) {
 
 	.character-tile {
-		width: 23%;
 		max-width: 200px;
+		width: 23%;
 	}
 
 	.character-tile:nth-of-type(2n) {
