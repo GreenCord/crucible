@@ -1,4 +1,7 @@
 $(document).ready(function(){
+	
+	// theme music
+	
 
 	// define game object
 	var game = {
@@ -6,10 +9,21 @@ $(document).ready(function(){
 		chars: ['char1','char2','char3','char4'],
 		initpanels: ['#char-select-pool','#char-chosen-pool','#char-attack-pool','#char-defender','#chars-defeated'],
 
+		// audio
+		intromusic: new Audio('./assets/sounds/game.ogg'),
+		gamestart: new Audio('./assets/sounds/game-start.ogg'),
+		charselect: new Audio('./assets/sounds/player-select.ogg'),
+		battlemusic: new Audio('./assets/sounds/battle-music.ogg'),
+		victorymusic: new Audio('./assets/sounds/victory-music.ogg'),
+		defeatedmusic: new Audio('./assets/sounds/defeated-music.ogg'),
+		hitsound: new Audio('./assets/sounds/hit.ogg'),
+		defenderdeath: new Audio('./assets/sounds/defender-death.ogg'),
+		playerdeath: new Audio('./assets/sounds/player-death.ogg'),
+		// characters
 		char1: {
 			id: 'char1',
-			name: 'Character 1',
-			image: '<img src="https://placehold.it/320x240" alt="Character 1" />',
+			name: 'Yellow Warrior',
+			image: '<img src="./assets/images/yellowwarrior.jpg" alt="Image of the Yellow Warrior" />',
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
@@ -17,13 +31,15 @@ $(document).ready(function(){
 			currhp: null,  // current HP during game
 			baseatk: 8,  // base attack power as player
 			curratk: null, // current attack power as player during game
-			cntratk: 10 // counter attack as enemy
+			cntratk: 10, // counter attack as enemy
+			halfhealth: 'I\'ve not seen such bravery!', // text to display when, as player, has <50% health
+			quarterhealth: 'Yellow Warrior is about to die.' // text to deplay when, as player, has <25% health 
 		},
 
 		char2: {
 			id: 'char2',
-			name: 'Character 2',
-			image: '<img src="https://placehold.it/320x240" alt="Character 2" />',
+			name: 'Blue Valkyrie',
+			image: '<img src="./assets/images/bluevalkyrie.jpg" alt="Image of the Blue Valkyrie" />',
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
@@ -31,13 +47,15 @@ $(document).ready(function(){
 			currhp: null,
 			baseatk: 10,
 			curratk: null,
-			cntratk: 15
+			cntratk: 15,
+			halfhealth: 'Your life force is running out.',
+			quarterhealth: 'Blue Valkyrie is about to die.'
 		},
 
 		char3: {
 			id: 'char3',
-			name: 'Character 3',
-			image: '<img src="https://placehold.it/320x240" alt="Character 3" />',
+			name: 'Red Wizard',
+			image: '<img src="./assets/images/redwizard.jpg" alt="Image of the Red Wizard" />',
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
@@ -45,13 +63,15 @@ $(document).ready(function(){
 			currhp: null,
 			baseatk: 5,
 			curratk: null,
-			cntratk: 20
+			cntratk: 20,
+			halfhealth: 'Red Wizard needs food badly.',
+			quarterhealth: 'Red Wizard is about to die.'
 		},
 
 		char4: {
 			id: 'char4',
-			name: 'Character 4',
-			image: '<img src="https://placehold.it/320x240" alt="Character 4" />',
+			name: 'Green Elf',
+			image: '<img src="./assets/images/greenelf.jpg" alt="Image of the Green Elf" />',
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
@@ -59,7 +79,9 @@ $(document).ready(function(){
 			currhp: null,
 			baseatk: 7,
 			curratk: null,
-			cntratk: 6
+			cntratk: 6,
+			halfhealth: 'Green Elf has shot the food.',
+			quarterhealth: 'Green Elf is about to die.'
 		},
 
 		player: {},
@@ -115,8 +137,8 @@ $(document).ready(function(){
 		},
 
 		createTile: function(objid,targetid){ // creates character tiles
-			/* Tile structure for reference
-			<div id="" class="character-tile clickable">
+						/* Tile structure for reference
+						<div id="" class="character-tile clickable">
                 <div class="character-name">Character 1</div>
                 <div class="character-pic"><img src="https://placehold.it/320x240" alt="char pic" /></div>
                 <div class="character-hp">
@@ -146,8 +168,8 @@ $(document).ready(function(){
 			});
 		},
 
-		fightText: function(text,classadd,classremove){ // update the fight text area
-			$('#fight-text').text(text).addClass(classadd).removeClass(classremove);
+		fightText: function(text,classadd,classremove,classremove2){ // update the fight text area
+			$('#fight-text').text(text).addClass(classadd).removeClass(classremove).removeClass(classremove2);
 		},
 
 		resolveRound: function(playerobj, defenderobj){ // handles attack round
@@ -161,18 +183,20 @@ $(document).ready(function(){
 			console.log(defenderobj.currhp + '=' + defenderobj.currhp + '-' + playerobj.curratk);
 			var tempdefenderhp = defenderobj.currhp - playerobj.curratk;
 			if (tempdefenderhp <= 0) { 
+				gameobj.playSound(gameobj.defenderdeath,false);
 				defenderobj.currhp = 0;
 
 				// if defender dead, if there are more attackers, choose a new one, or else game won
 				if (gameobj.numAttackers > 0) {
 					gameobj.numAttackers--;
-					gameobj.fightText('Choose a new enemy to attack!');
+					gameobj.fightText('You defeated your enemy! Choose a new enemy to attack!','default','caution','warning');
 					gameobj.attacking = false;
 					gameobj.phase = 'attack';
 				} else {
 					gameobj.phase = 'gameover';
 					$('#game-over-title').text('You emerged victorious!');
 					$('#game-over-text').text('After so many rounds of battle, you are battered and bruised. Yet you live to fight again.');
+					gameobj.playSound(gameobj.victorymusic,true);
 					$('#replay-btn').text('Play Again');
 					gameobj.hideArea('#char-attackpool','fast');
 					gameobj.hideArea('#fight-section','fast');
@@ -185,7 +209,9 @@ $(document).ready(function(){
 			} else { 
 				defenderobj.currhp = tempdefenderhp; 
 			}
-			$(defenderid).children('.character-hp').children('.character-currhp').text(defenderobj.currhp);
+
+			var currhppercent = Math.round(defenderobj.currhp / defenderobj.basehp * 100);
+			$(defenderid).children('.character-hp').children('.character-currhp').text(defenderobj.currhp).css('width', currhppercent+'%');
 				// increase player curratk power
 			playerobj.curratk += playerobj.baseatk;
 
@@ -195,8 +221,10 @@ $(document).ready(function(){
 			var tempplayerhp = playerobj.currhp - defenderobj.cntratk;
 				// update player hp
 			if (tempplayerhp <= 0) {
+				gameobj.playSound(gameobj.playerdeath,false);
 				playerobj.currhp = 0;
 				// if player is dead, trigger game over
+				gameobj.playSound(gameobj.defeatedmusic,true);
 				gameobj.phase = 'gameover';
 				$('#game-over-title').text('You have been defeated.');
 				$('#game-over-text').text('You fought valiantly, but your foes were too powerful.');
@@ -207,9 +235,51 @@ $(document).ready(function(){
 			} else {  // player still alive
 				playerobj.currhp = tempplayerhp;
 			}
-			$('#chosen-char').children('.character-hp').children('.character-currhp').text(playerobj.currhp);
+			currhppercent = Math.round(playerobj.currhp / playerobj.basehp * 100);
+			if( !$.trim( $('#char-defender').html() ).length ) {
+				console.log('trim encountered');
+				gameobj.fightText('You defeated your enemy! Choose a new enemy to attack!','default','caution','warning');
+				
+			} else {
+				console.log('trim not encountered');
+				if ((currhppercent < 50) && (currhppercent > 25)) {
+					gameobj.fightText(playerobj.halfhealth,'caution','warning','default');
+				} else if ((currhppercent < 25) && (currhppercent > 0)) {
+					gameobj.fightText(playerobj.quarterhealth,'caution','warning','default');
+				}
+				
+			}
+			$('#chosen-char').children('.character-hp').children('.character-currhp').text(playerobj.currhp).css('width', currhppercent+'%');
+	
 
 			console.log('Round resolved.');
+		},
+
+		playSound: function(objid,loop){
+			if (loop) {
+				if ((this.intromusic.duration > 0) && (!this.intromusic.paused)) { 
+					this.intromusic.pause();
+					this.intromusic.currentTime = 0;
+				}
+				if ((this.battlemusic.duration > 0) && (!this.battlemusic.paused)) { 
+					this.battlemusic.pause();
+					this.battlemusic.currentTime = 0;
+				}
+				if ((this.victorymusic.duration > 0) && (!this.victorymusic.paused)) { 
+					this.victorymusic.pause();
+					this.victorymusic.currentTime = 0;
+				}
+				if ((this.defeatedmusic.duration > 0) && (!this.defeatedmusic.paused)) {
+					this.defeatedmusic.pause();
+					this.defeatedmusic.currentTime = 0;
+				}
+				objid.addEventListener('ended', function(){
+				objid.currentTime = 0;
+				objid.play();
+				}, false);
+			}
+			objid.currentTime = 0;
+			objid.play();
 		},
 
 		clickHandler: function(objid){ //define click action functions
@@ -225,6 +295,7 @@ $(document).ready(function(){
 						gameobj.phase = 'select';
 						gameobj.showArea('#char-select');
 						gameobj.hideArea('#game-over');
+						gameobj.playSound(gameobj.gamestart,false);
 					} else {
 						alert('Something went wrong. (Phase - Pregame, clicked item ' + objid + ')');
 					}
@@ -240,16 +311,19 @@ $(document).ready(function(){
 					$.each(arr, function(index, value){
 						gameobj.toggleArea(value);
 					});
+					gameobj.playSound(gameobj.charselect,false);
 					gameobj.phase = 'attack'; // update game phase
 					break; //end select phase
 
 				case 'attack': // game phase attack - select an enemy
 					if (objid === '#attack-btn') { // handles replaying games to force an enemy selection
-						gameobj.fightText('You must choose an enemy before you can attack!','warning','default');
+						gameobj.fightText('You must choose an enemy before you can attack!','warning','default','caution');
 					} else {
 						$('#char-defender').append($objid);
 						gameobj.defender = gameobj[chosencharobj]; // put values of chosen defender into defender object
 						gameobj.showArea('#fight-section'); // display #fight-section
+						gameobj.playSound(gameobj.charselect,false);
+						gameobj.playSound(gameobj.battlemusic,true);
 						gameobj.phase = 'battle'; // update game phase
 					}
 					break; // end attack phase - select an enemy
@@ -264,9 +338,11 @@ $(document).ready(function(){
 								gameobj.defender = {};
 								$('#char-attack-pool').append($objid);
 								gameobj.toggleArea('#fight-section');
+								gameobj.playSound(gameobj.charselect,false);
+								gameobj.playSound(gameobj.intromusic,true);
 								gameobj.phase = 'attack';
 							} else {
-								gameobj.fightText('You\'re in the heat of battle, you can\'t retreat!','warning','default');
+								gameobj.fightText('You\'re in the heat of battle, you can\'t retreat!','warning','default','caution');
 							}
 							break;
 
@@ -281,16 +357,18 @@ $(document).ready(function(){
 								// swap tiles
 								$('#char-attack-pool').append($($origcharid));
 								$('#char-defender').append($(objid));
+								gameobj.playSound(gameobj.charselect,false);
 							} else {
-								gameobj.fightText('You\'re in the head of battle, you can\'t change attackers now!','warning','default');
+								gameobj.fightText('You\'re in the heat of battle, you can\'t change attackers now!','warning','default','caution');
 							}
 							break;
 
 						case 'char-attackbtn':
 						// if it is char-attackbtn, then attack!
 							console.log('ATTAAAAAAACK!');
+							gameobj.playSound(gameobj.hitsound,false);
 							gameobj.attacking = true;
-							gameobj.fightText('You engage in a round of battle!','default','warning');
+							gameobj.fightText('You engage in a round of battle!','default','warning','caution');
 							var playerobj = gameobj.player;
 							var defenderobj = gameobj.defender;
 							gameobj.resolveRound(playerobj,defenderobj);
@@ -310,6 +388,7 @@ $(document).ready(function(){
 					gameobj.clearAllPanels();
 					gameobj.initializeGame();
 					gameobj.createSelectPool();
+					gameobj.playSound(game.intromusic,true);
 					gameobj.phase = 'select';
 					gameobj.hideArea('#char-chosen',0);
 					gameobj.hideArea('#game-over',0);
@@ -326,9 +405,7 @@ $(document).ready(function(){
 	
 	// initialize game
 	game.initializeGame();
-	console.log('Initialized Game Object');
-	console.log(game);
-
+	game.playSound(game.intromusic,true);
 	// capture click action
 	$(document).click(function(event){
 		$(event.target).closest('.clickable').each(function(){

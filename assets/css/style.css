@@ -5,25 +5,49 @@
 	/* Screen styles only - separate from print styles */
 	
 	html, body {
-		font: 100%/1.5 Roboto, Arial, Helvetica, sans-serif;
+		font: 18px/1.5 'New Rocker', Arial, Helvetica, sans-serif;
 		height: 100%;
 	}
 
 	body {
 		display: flex;
 		flex-direction: column;
-		background: #fefefe;
+		background: #fefefe url('../images/cavetile.jpg') 50% 50% repeat;
+
 	}
 
 	h1, h2, h3, h4, h5, h6, label {
-		font-family: Roboto, Arial, Helvetica, sans-serif;
+		font-family: 'New Rocker', Arial, Helvetica, sans-serif;
 		font-weight: 900;
 		line-height: 1.1;
 		color: #0e0e0e;
 	}
 
+	#pageHeader, button {
+		font-family: 'Trade Winds', 'Roboto', Arial, Helvetica, sans-serif;
+	}
+
+	#pageHeader {
+		font-size: 3.75rem;
+		color: yellow;
+		text-shadow: 0 9px 0 #0e0e0e;
+	}
+
+	button {
+		background: yellow;
+		border: 0;
+		box-shadow: 0 9px 4px #0e0e0e;
+	}
+
+	button:hover,
+	button:active,
+	button:focus {
+		background: orange;
+		box-shadow: 0 2px 1px #0e0e0e;
+	}
+
 	form input[type="text"], form input[type="email"], form textarea, form input[type="submit"], button {
-		font-family: Roboto, Arial, Helvetica, sans-serif;
+		font-family: 'New Rocker', Roboto, Arial, Helvetica, sans-serif;
 		font-size: 1rem;
 	}
 
@@ -66,19 +90,12 @@
 		display: inline-block;
 		padding-right: .4rem;
 	}
-/*
+
 	h1 { font-size: 3rem;		line-height: 1;		margin-bottom: 2.0rem; 		}
 	h2 { font-size: 2rem;		line-height: 1.1; 	margin-bottom: 1.33333rem;	}
 	h3 { font-size: 1.5rem;		line-height: 1.1;	margin-bottom: 1.0rem; 		}
 	h4 { font-size: 1.25rem;	line-height: 1.1;	margin-bottom: 0.83333rem; 	}
 	h5 { font-size: 1.125rem;	line-height: 1.1; 	margin-bottom: 0.75rem; 	}
-	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem	}
-*/
-	h1 { font-size: 1.5rem;		line-height: 1;		margin-bottom: 1.0rem;	 	}
-	h2 { font-size: 1.375rem;	line-height: 1.1; 	margin-bottom: 0.91667rem;	}
-	h3 { font-size: 1.25rem;	line-height: 1.1;	margin-bottom: 0.83333rem;	}
-	h4 { font-size: 1.125rem;	line-height: 1.1;	margin-bottom: 0.75rem; 	}
-	h5 { font-size: 1rem;		line-height: 1.1; 	margin-bottom: 0.66667rem; 	}
 	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem	}
 
 	a { text-decoration: none; border: 1px solid transparent; }
@@ -158,7 +175,6 @@
 	header {
 		padding: 1.5rem;
 		text-align: center;
-		border-bottom: 1px solid tomato;
 	}
 	header h1 {
 		margin: 0;
@@ -177,11 +193,17 @@
 	#game-over
 	{
 		padding: 0.75rem;
-		border-bottom: 1px solid tomato;
+		text-align: center;
+    background: rgba(150, 145, 142, 0.67);
+    margin: 1rem;
+    border-radius: 25px 0 25px 0;
+    border: 5px;
+    border-color: rgba(68,46,24,0.33);
+    border-style: ridge;
 	}
 
 	#game-over {
-		text-align: center;
+		
 	}
 
 	#char-select h2, 
@@ -224,11 +246,11 @@
 		border-color: darkred;
 	}
 
-	#char-defender .character-tile,
-	#chars-defeated .character-tile {
+	.character-tile {
 		background: #0e0e0e;
 		color: #fefefe;
 		border-color: black;
+		text-shadow: 1px 1px 1px #0e0e0e;
 	}
 
 	#chars-defeated .character-tile {
@@ -262,6 +284,8 @@
 	}
 
 	#fight-text {
+		padding: 0.55rem;
+		margin: 0.2rem;
 	}
 
 	#fight-text.default {
@@ -269,8 +293,12 @@
 		background: transparent;
 	}
 
+	#fight-text.caution {
+		color: #fefefe;
+		background: #0e0e0e;
+	}
+
 	#fight-text.warning {
-		padding: 0.75rem;
 		color: #cc0000;
 		background: #fbb9b9;
 	}
@@ -278,13 +306,26 @@
 	#char-attackbtn button, #game-over button {
 		display: block;
 		width: 100%;
-		padding: 1rem 3rem;
+		padding: 1rem 2rem;
 		margin: 0.75rem auto;
+	}
+
+	#game-over button {
+		width: 50%;
 	}
 
 	/* Footer wrapper - contains footer content */
 	.footer-wrapper {
 		padding: 0.75rem;
+		text-align: center;
+		background: #efefef;
+		box-shadow: 0 -5px 25px #0e0e0e;
+	}
+
+	.footer-wrapper p {
+		font-family: 'Roboto',Arial,Helvetica,sans-serif;
+		font-size: 0.875rem;
+		margin: 0;
 	}
 
 	/* End footer wrapper */
@@ -307,14 +348,6 @@
 }
 
 @media only screen and (min-width: 640px) {
-
-	h1 { font-size: 1.75rem;	line-height: 1;		margin-bottom: 1.16667rem;	}
-	h2 { font-size: 1.5rem;		line-height: 1.1; 	margin-bottom: 1.0rem;		}
-	h3 { font-size: 1.375rem;	line-height: 1.1;	margin-bottom: 0.91667rem;	}
-	h4 { font-size: 1.25rem;	line-height: 1.1;	margin-bottom: 0.83333rem; 	}
-	h5 { font-size: 1.125rem;	line-height: 1.1; 	margin-bottom: 0.75rem; 	}
-	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem	}
-	
 
 	.character-tile {
 		width: 23%;
@@ -339,12 +372,7 @@
 }
 
 @media only screen and (min-width: 1024px) {
-	h1 { font-size: 3rem;		line-height: 1;		margin-bottom: 2.0rem; 		}
-	h2 { font-size: 2rem;		line-height: 1.1; 	margin-bottom: 1.33333rem;	}
-	h3 { font-size: 1.5rem;		line-height: 1.1;	margin-bottom: 1.0rem; 		}
-	h4 { font-size: 1.25rem;	line-height: 1.1;	margin-bottom: 0.83333rem; 	}
-	h5 { font-size: 1.125rem;	line-height: 1.1; 	margin-bottom: 0.75rem; 	}
-	h6 { font-size: 1rem;		line-height: 1.1;	margin-bottom: 0.66667rem	}
+
 }
 
 @media only screen and (min-width: 1280px) {
