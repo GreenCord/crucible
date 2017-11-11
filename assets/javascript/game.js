@@ -11,6 +11,7 @@ $(document).ready(function(){
 		player: {},	// during battle, this is the player's object
 		defender: {}, // during battle, this is the defender's object
 		attacking: false, // when true, player has attacked an opponent and can't switch
+		wonRound: false,
 		numAttackers: null, // number of attackers to face (0 based)
 		phase: 'pregame', // game phase tracker | possible phases: pregame, select, begin, battle, gameover
 
@@ -33,11 +34,11 @@ $(document).ready(function(){
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
-			basehp: 100, // base/default HP
+			basehp: 150, // base/default HP
 			currhp: null,  // current HP during game
-			baseatk: 8,  // base attack power as player
+			baseatk: 10,  // base attack power as player
 			curratk: null, // current attack power as player during game
-			cntratk: 10, // counter attack as enemy
+			cntratk: 22, // counter attack as enemy
 			halfhealth: 'I\'ve not seen such bravery!', // text to display when, as player, has <50% health
 			quarterhealth: 'Yellow Warrior is about to die.' // text to deplay when, as player, has <25% health 
 		},
@@ -49,11 +50,11 @@ $(document).ready(function(){
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
-			basehp: 130,
+			basehp: 110,
 			currhp: null,
-			baseatk: 10,
+			baseatk: 15,
 			curratk: null,
-			cntratk: 15,
+			cntratk: 25,
 			halfhealth: 'Your life force is running out.',
 			quarterhealth: 'Blue Valkyrie is about to die.'
 		},
@@ -65,11 +66,11 @@ $(document).ready(function(){
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
-			basehp: 110,
+			basehp: 90,
 			currhp: null,
-			baseatk: 5,
+			baseatk: 16,
 			curratk: null,
-			cntratk: 20,
+			cntratk: 40,
 			halfhealth: 'Red Wizard needs food badly.',
 			quarterhealth: 'Red Wizard is about to die.'
 		},
@@ -81,11 +82,11 @@ $(document).ready(function(){
 			imagedead: '',
 			imagewin: '',
 			imagelose: '',
-			basehp: 120,
+			basehp: 100,
 			currhp: null,
-			baseatk: 7,
+			baseatk: 20,
 			curratk: null,
-			cntratk: 6,
+			cntratk: 15,
 			halfhealth: 'Green Elf has shot the food.',
 			quarterhealth: 'Green Elf is about to die.'
 		},
@@ -130,6 +131,7 @@ $(document).ready(function(){
 				gameobj.resetChar(value);
 			});
 			gameobj.numAttackers = 2;
+			gameobj.wonRound = false;
 			game.playSound(game.intromusic,true);
 		},
 
@@ -182,6 +184,7 @@ $(document).ready(function(){
 			if (tempdefenderhp <= 0) { 
 				gameobj.playSound(gameobj.defenderdeath,false);
 				defenderobj.currhp = 0;
+				gameobj.wonRound = true;
 
 				// if defender dead, if there are more attackers, choose a new one, or else game won
 				if (gameobj.numAttackers > 0) {
@@ -211,25 +214,27 @@ $(document).ready(function(){
 				// increase player curratk power
 			playerobj.curratk += playerobj.baseatk;
 
-			// defender attacks player ( player.currhp - defender.cntratk )
-			console.log('Defender attacks player:');
-			console.log(playerobj.currhp + '=' + playerobj.currhp + '-' + defenderobj.cntratk);
-			var tempplayerhp = playerobj.currhp - defenderobj.cntratk;
-				// update player hp
-			if (tempplayerhp <= 0) {
-				gameobj.playSound(gameobj.playerdeath,false);
-				playerobj.currhp = 0;
-				// if player is dead, trigger game over
-				gameobj.playSound(gameobj.defeatedmusic,true);
-				gameobj.phase = 'gameover';
-				$('#game-over-title').text('You have been defeated.');
-				$('#game-over-text').text('You fought valiantly, but your foes were too powerful.');
-				$('#replay-btn').text('Play Again');
-				gameobj.hideArea('#char-attackpool','fast');
-				gameobj.hideArea('#fight-section','fast');
-				gameobj.showArea('#game-over','fast');
-			} else {  // player still alive
-				playerobj.currhp = tempplayerhp;
+			// defender attacks player ( player.currhp - defender.cntratk ) - only if player hasn't won first
+			if (!gameobj.wonRound) {
+				console.log('Defender attacks player:');
+				console.log(playerobj.currhp + '=' + playerobj.currhp + '-' + defenderobj.cntratk);
+				var tempplayerhp = playerobj.currhp - defenderobj.cntratk;
+					// update player hp
+				if (tempplayerhp <= 0) {
+					gameobj.playSound(gameobj.playerdeath,false);
+					playerobj.currhp = 0;
+					// if player is dead, trigger game over
+					gameobj.playSound(gameobj.defeatedmusic,true);
+					gameobj.phase = 'gameover';
+					$('#game-over-title').text('You have been defeated.');
+					$('#game-over-text').text('You fought valiantly, but your foes were too powerful.');
+					$('#replay-btn').text('Play Again');
+					gameobj.hideArea('#char-attackpool','fast');
+					gameobj.hideArea('#fight-section','fast');
+					gameobj.showArea('#game-over','fast');
+				} else {  // player still alive
+					playerobj.currhp = tempplayerhp;
+				}
 			}
 			currhppercent = Math.round(playerobj.currhp / playerobj.basehp * 100);
 			if( !$.trim( $('#char-defender').html() ).length ) {
@@ -246,7 +251,7 @@ $(document).ready(function(){
 				
 			}
 			$('#chosen-char').children('.character-hp').children('.character-currhp').text(playerobj.currhp).css('width', currhppercent+'%');
-	
+			gameobj.wonRound = false;
 
 			console.log('Round resolved.');
 		},
